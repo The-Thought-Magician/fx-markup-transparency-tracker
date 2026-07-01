@@ -110,17 +110,18 @@ export default function BenchmarksPage() {
       const org = await api.getCurrentOrg().catch(() => null)
       const resolvedOrg = org?.id ?? null
       setOrgId(resolvedOrg)
-      const [srcs] = await Promise.all([
+      const [srcs, rows] = await Promise.all([
         api.getRateSources(resolvedOrg ?? undefined).catch(() => []),
-        loadBenchmarks(),
+        api.getBenchmarks(filterBase || undefined, filterQuote || undefined, resolvedOrg ?? undefined),
       ])
       setSources(Array.isArray(srcs) ? srcs : [])
+      setBenchmarks(Array.isArray(rows) ? rows : [])
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load benchmarks')
     } finally {
       setLoading(false)
     }
-  }, [loadBenchmarks])
+  }, [filterBase, filterQuote])
 
   useEffect(() => {
     loadAll()
@@ -129,7 +130,9 @@ export default function BenchmarksPage() {
   // re-run benchmark fetch on filter change after initial load
   useEffect(() => {
     if (loading) return
-    loadBenchmarks().catch((e) => setError(e instanceof Error ? e.message : 'Failed to load rates'))
+    loadBenchmarks()
+      .then(() => setError(null))
+      .catch((e) => setError(e instanceof Error ? e.message : 'Failed to load rates'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterBase, filterQuote])
 
