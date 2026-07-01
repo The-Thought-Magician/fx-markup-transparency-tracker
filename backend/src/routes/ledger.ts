@@ -10,7 +10,7 @@ import {
   providers,
   corridors,
 } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -131,23 +131,24 @@ async function computeLedger(orgId: string, period: string | undefined): Promise
 // Routes
 // ---------------------------------------------------------------------------
 
-// Public: saved cost-ledger entries (?org_id)
-router.get('/', async (c) => {
+// Auth: saved cost-ledger entries (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(cost_ledgers)
-        .where(eq(cost_ledgers.org_id, orgId))
-        .orderBy(desc(cost_ledgers.created_at))
-    : await db.select().from(cost_ledgers).orderBy(desc(cost_ledgers.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(cost_ledgers)
+    .where(eq(cost_ledgers.org_id, orgId))
+    .orderBy(desc(cost_ledgers.created_at))
   return c.json(rows)
 })
 
-// Public: live annualized projection (?org_id&period)
-router.get('/summary', async (c) => {
+// Auth: live annualized projection (?org_id required&period)
+router.get('/summary', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
   if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const period = c.req.query('period')
   const summary = await computeLedger(orgId, period)
   return c.json(summary)

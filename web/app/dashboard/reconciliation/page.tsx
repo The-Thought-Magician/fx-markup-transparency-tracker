@@ -36,7 +36,7 @@ interface ProviderVariance {
   [k: string]: unknown
 }
 
-const STATUSES = ['open', 'investigating', 'matched', 'disputed', 'resolved']
+const STATUSES = ['open', 'matched', 'disputed', 'resolved']
 const STATUS_FILTERS = ['', ...STATUSES]
 
 function fmtMoney(cents?: number) {
@@ -55,8 +55,6 @@ function statusTone(s: string): 'slate' | 'amber' | 'green' | 'rose' | 'blue' {
     case 'resolved':
     case 'matched':
       return 'green'
-    case 'investigating':
-      return 'amber'
     case 'disputed':
       return 'rose'
     case 'open':
@@ -145,7 +143,7 @@ export default function ReconciliationPage() {
   }, [recons, search])
 
   const stats = useMemo(() => {
-    const open = recons.filter((r) => r.status === 'open' || r.status === 'investigating').length
+    const open = recons.filter((r) => r.status === 'open').length
     const disputed = recons.filter((r) => r.status === 'disputed').length
     const totalVar = recons.reduce((s, r) => s + (r.variance_cents ?? 0), 0)
     const totalAbs = recons.reduce((s, r) => s + Math.abs(r.variance_cents ?? 0), 0)
@@ -242,7 +240,7 @@ export default function ReconciliationPage() {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Stat label="Reconciliations" value={recons.length} tone="teal" />
-        <Stat label="Open / investigating" value={stats.open} tone="amber" />
+        <Stat label="Open" value={stats.open} tone="amber" />
         <Stat label="Disputed" value={stats.disputed} tone="rose" />
         <Stat
           label="Net variance"

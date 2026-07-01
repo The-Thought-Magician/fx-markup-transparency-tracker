@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '../db/index.js'
 import { organizations, org_members } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -18,14 +18,10 @@ const memberSchema = z.object({
   role: z.string().min(1).optional().default('member'),
 })
 
-// GET / — public — orgs the header user belongs to (via membership), falling
-// back to orgs they own. If no user header, returns all orgs.
-router.get('/', async (c) => {
+// GET / — auth — orgs the header user belongs to (via membership), falling
+// back to orgs they own.
+router.get('/', authMiddleware, async (c) => {
   const userId = getUserId(c)
-  if (!userId) {
-    const all = await db.select().from(organizations).orderBy(desc(organizations.created_at))
-    return c.json(all)
-  }
   const memberships = await db
     .select()
     .from(org_members)
@@ -75,12 +71,14 @@ router.get('/current', authMiddleware, async (c) => {
   return c.json(org)
 })
 
-// GET /:id — public — a single org
-router.get('/:id', async (c) => {
+// GET /:id — auth — a single org (must be a member)
+router.get('/:id', authMiddleware, async (c) => {
+  const id = c.req.param('id')
+  if (!(await assertOrgMember(getUserId(c), id))) return c.json({ error: 'Not found' }, 404)
   const [org] = await db
     .select()
     .from(organizations)
-    .where(eq(organizations.id, c.req.param('id')))
+    .where(eq(organizations.id, id))
   if (!org) return c.json({ error: 'Not found' }, 404)
   return c.json(org)
 })
@@ -120,9 +118,10 @@ router.put('/:id', authMiddleware, zValidator('json', orgSchema.partial()), asyn
   return c.json(updated)
 })
 
-// GET /:id/members — public — members of an org
-router.get('/:id/members', async (c) => {
+// GET /:id/members — auth — members of an org (must be a member)
+router.get('/:id/members', authMiddleware, async (c) => {
   const id = c.req.param('id')
+  if (!(await assertOrgMember(getUserId(c), id))) return c.json({ error: 'Not found' }, 404)
   const members = await db
     .select()
     .from(org_members)

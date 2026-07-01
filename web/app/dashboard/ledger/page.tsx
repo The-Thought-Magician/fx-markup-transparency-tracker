@@ -20,7 +20,11 @@ interface LedgerSummary {
   annualized_leakage_cents?: number
   payment_count?: number
   avg_markup_bps?: number
-  breakdown?: Record<string, number> | { label: string; value: number }[] | null
+  breakdown?: {
+    by_provider?: Array<{ provider_id: string; label: string; leakage_cents: number; payment_count: number }>
+    by_corridor?: Array<{ corridor_id: string; label: string; leakage_cents: number; payment_count: number }>
+    annualization_factor?: number
+  } | null
 }
 
 interface CostLedger {
@@ -57,16 +61,14 @@ function defaultPeriod() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
+// Breakdown comes from the backend as { by_provider, by_corridor, annualization_factor }.
+// Prefer the by-provider leakage rollup for the chart; fall back to by-corridor.
 function normalizeBreakdown(breakdown: LedgerSummary['breakdown']): { label: string; value: number }[] {
   if (!breakdown) return []
-  if (Array.isArray(breakdown)) {
-    return breakdown
-      .filter((b) => b && typeof b.value === 'number')
-      .map((b) => ({ label: String(b.label), value: b.value }))
-  }
-  return Object.entries(breakdown)
-    .filter(([, v]) => typeof v === 'number')
-    .map(([label, value]) => ({ label, value: value as number }))
+  const rows = breakdown.by_provider?.length ? breakdown.by_provider : breakdown.by_corridor ?? []
+  return rows
+    .filter((b) => b && typeof b.leakage_cents === 'number')
+    .map((b) => ({ label: b.label, value: b.leakage_cents }))
 }
 
 export default function LedgerPage() {

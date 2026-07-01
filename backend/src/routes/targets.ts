@@ -9,7 +9,7 @@ import {
   payment_markups,
 } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -19,30 +19,28 @@ const targetSchema = z.object({
   target_markup_bps: z.number(),
 })
 
-// GET / — public — markup targets (?org_id)
-router.get('/', async (c) => {
+// GET / — auth — markup targets (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(benchmarks_targets)
-        .where(eq(benchmarks_targets.org_id, orgId))
-        .orderBy(desc(benchmarks_targets.created_at))
-    : await db
-        .select()
-        .from(benchmarks_targets)
-        .orderBy(desc(benchmarks_targets.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(benchmarks_targets)
+    .where(eq(benchmarks_targets.org_id, orgId))
+    .orderBy(desc(benchmarks_targets.created_at))
   return c.json(rows)
 })
 
-// GET /variance — public — payments/corridors over target (?org_id)
+// GET /variance — auth — payments/corridors over target (?org_id required)
 //
 // For each corridor that has a target, list the payments whose markup_bps
 // exceeds the corridor target, plus a per-corridor rollup (avg markup, count
 // over target, total over-target amount).
-router.get('/variance', async (c) => {
+router.get('/variance', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
   if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
 
   const targets = await db
     .select()

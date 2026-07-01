@@ -11,7 +11,7 @@ import {
   corridor_leaderboard_snapshots,
   provider_leaderboard_snapshots,
 } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -158,17 +158,21 @@ async function computeProviderRanking(orgId: string | undefined, period: string 
 // Routes
 // ---------------------------------------------------------------------------
 
-// Public: live corridor markup ranking (?org_id&period)
-router.get('/corridors', async (c) => {
+// Auth: live corridor markup ranking (?org_id required&period)
+router.get('/corridors', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const period = c.req.query('period')
   const ranking = await computeCorridorRanking(orgId, period)
   return c.json(ranking)
 })
 
-// Public: live provider markup ranking (?org_id&period)
-router.get('/providers', async (c) => {
+// Auth: live provider markup ranking (?org_id required&period)
+router.get('/providers', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const period = c.req.query('period')
   const ranking = await computeProviderRanking(orgId, period)
   return c.json(ranking)
@@ -199,36 +203,28 @@ router.post('/snapshots', authMiddleware, zValidator('json', snapshotSchema), as
   return c.json({ corridor: corridorSnap, provider: providerSnap }, 201)
 })
 
-// Public: saved snapshots (?org_id&kind)
-router.get('/snapshots', async (c) => {
+// Auth: saved snapshots (?org_id required&kind)
+router.get('/snapshots', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const kind = c.req.query('kind') // 'corridor' | 'provider' | undefined (both)
 
   const out: { corridor?: unknown[]; provider?: unknown[] } = {}
 
   if (!kind || kind === 'corridor') {
-    out.corridor = orgId
-      ? await db
-          .select()
-          .from(corridor_leaderboard_snapshots)
-          .where(eq(corridor_leaderboard_snapshots.org_id, orgId))
-          .orderBy(desc(corridor_leaderboard_snapshots.created_at))
-      : await db
-          .select()
-          .from(corridor_leaderboard_snapshots)
-          .orderBy(desc(corridor_leaderboard_snapshots.created_at))
+    out.corridor = await db
+      .select()
+      .from(corridor_leaderboard_snapshots)
+      .where(eq(corridor_leaderboard_snapshots.org_id, orgId))
+      .orderBy(desc(corridor_leaderboard_snapshots.created_at))
   }
   if (!kind || kind === 'provider') {
-    out.provider = orgId
-      ? await db
-          .select()
-          .from(provider_leaderboard_snapshots)
-          .where(eq(provider_leaderboard_snapshots.org_id, orgId))
-          .orderBy(desc(provider_leaderboard_snapshots.created_at))
-      : await db
-          .select()
-          .from(provider_leaderboard_snapshots)
-          .orderBy(desc(provider_leaderboard_snapshots.created_at))
+    out.provider = await db
+      .select()
+      .from(provider_leaderboard_snapshots)
+      .where(eq(provider_leaderboard_snapshots.org_id, orgId))
+      .orderBy(desc(provider_leaderboard_snapshots.created_at))
   }
 
   return c.json(out)
@@ -274,22 +270,22 @@ function diffSnapshots(latest: RankRow[], prior: RankRow[]) {
   return { best, worst, all: movers }
 }
 
-// Public: best/worst movers between latest two snapshots (?org_id&kind)
-router.get('/movers', async (c) => {
+// Auth: best/worst movers between latest two snapshots (?org_id required&kind)
+router.get('/movers', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const kind = c.req.query('kind') === 'provider' ? 'provider' : 'corridor'
 
   const table =
     kind === 'provider' ? provider_leaderboard_snapshots : corridor_leaderboard_snapshots
 
-  const snaps = orgId
-    ? await db
-        .select()
-        .from(table)
-        .where(eq(table.org_id, orgId))
-        .orderBy(desc(table.created_at))
-        .limit(2)
-    : await db.select().from(table).orderBy(desc(table.created_at)).limit(2)
+  const snaps = await db
+    .select()
+    .from(table)
+    .where(eq(table.org_id, orgId))
+    .orderBy(desc(table.created_at))
+    .limit(2)
 
   if (snaps.length < 2) {
     return c.json({ kind, best: [], worst: [], all: [], message: 'Need at least two snapshots' })

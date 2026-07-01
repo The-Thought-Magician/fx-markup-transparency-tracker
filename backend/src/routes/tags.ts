@@ -11,7 +11,7 @@ import {
   organizations,
   audit_events,
 } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -61,12 +61,12 @@ async function recordAudit(
 // Tag CRUD
 // ---------------------------------------------------------------------------
 
-// Public: list tags (?org_id)
-router.get('/', async (c) => {
+// Auth: list tags (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db.select().from(tags).where(eq(tags.org_id, orgId)).orderBy(desc(tags.created_at))
-    : await db.select().from(tags).orderBy(desc(tags.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db.select().from(tags).where(eq(tags.org_id, orgId)).orderBy(desc(tags.created_at))
   return c.json(rows)
 })
 
@@ -163,12 +163,12 @@ router.post('/unassign', authMiddleware, zValidator('json', unassignSchema), asy
 // Per-tag leakage rollups (?org_id)
 // ---------------------------------------------------------------------------
 
-router.get('/rollups', async (c) => {
+router.get('/rollups', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
 
-  const tagRows = orgId
-    ? await db.select().from(tags).where(eq(tags.org_id, orgId))
-    : await db.select().from(tags)
+  const tagRows = await db.select().from(tags).where(eq(tags.org_id, orgId))
   if (tagRows.length === 0) return c.json([])
 
   const links = await db.select().from(payment_tags)

@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '../db/index.js'
 import { alerts, alert_rules, payments, payment_markups } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -97,30 +97,28 @@ const alertUpdateSchema = z.object({
 // Alerts
 // ---------------------------------------------------------------------------
 
-// GET / — public — alerts (?org_id&status)
-router.get('/', async (c) => {
+// GET / — auth — alerts (?org_id required&status)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const status = c.req.query('status')
-  const conds = []
-  if (orgId) conds.push(eq(alerts.org_id, orgId))
+  const conds = [eq(alerts.org_id, orgId)]
   if (status) conds.push(eq(alerts.status, status))
-  const where = conds.length === 1 ? conds[0] : conds.length > 1 ? and(...conds) : undefined
-  const rows = where
-    ? await db.select().from(alerts).where(where).orderBy(desc(alerts.created_at))
-    : await db.select().from(alerts).orderBy(desc(alerts.created_at))
+  const rows = await db.select().from(alerts).where(and(...conds)).orderBy(desc(alerts.created_at))
   return c.json(rows)
 })
 
-// GET /rules — public — alert rules (?org_id)
-router.get('/rules', async (c) => {
+// GET /rules — auth — alert rules (?org_id required)
+router.get('/rules', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(alert_rules)
-        .where(eq(alert_rules.org_id, orgId))
-        .orderBy(desc(alert_rules.created_at))
-    : await db.select().from(alert_rules).orderBy(desc(alert_rules.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(alert_rules)
+    .where(eq(alert_rules.org_id, orgId))
+    .orderBy(desc(alert_rules.created_at))
   return c.json(rows)
 })
 

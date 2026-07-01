@@ -10,7 +10,7 @@ import {
   wire_fees,
   fee_reconciliations,
 } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -147,30 +147,30 @@ async function decomposePayment(paymentId: string): Promise<Decomposition | null
 // Routes
 // ---------------------------------------------------------------------------
 
-// GET / — public — list payments (?org_id&provider_id&corridor_id)
-router.get('/', async (c) => {
+// GET / — auth — list payments (?org_id&provider_id&corridor_id)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const providerId = c.req.query('provider_id')
   const corridorId = c.req.query('corridor_id')
-  const conds = []
-  if (orgId) conds.push(eq(payments.org_id, orgId))
+  const conds = [eq(payments.org_id, orgId)]
   if (providerId) conds.push(eq(payments.provider_id, providerId))
   if (corridorId) conds.push(eq(payments.corridor_id, corridorId))
-  const rows = conds.length
-    ? await db
-        .select()
-        .from(payments)
-        .where(and(...conds))
-        .orderBy(desc(payments.value_date))
-    : await db.select().from(payments).orderBy(desc(payments.value_date))
+  const rows = await db
+    .select()
+    .from(payments)
+    .where(and(...conds))
+    .orderBy(desc(payments.value_date))
   return c.json(rows)
 })
 
-// GET /:id — public — payment + markup + wire fees + reconciliation
-router.get('/:id', async (c) => {
+// GET /:id — auth — payment + markup + wire fees + reconciliation
+router.get('/:id', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [payment] = await db.select().from(payments).where(eq(payments.id, id))
   if (!payment) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), payment.org_id))) return c.json({ error: 'Not found' }, 404)
   const [markup] = await db
     .select()
     .from(payment_markups)
@@ -188,11 +188,12 @@ router.get('/:id', async (c) => {
   })
 })
 
-// GET /:id/markup — public — decomposition for a payment
-router.get('/:id/markup', async (c) => {
+// GET /:id/markup — auth — decomposition for a payment
+router.get('/:id/markup', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [payment] = await db.select().from(payments).where(eq(payments.id, id))
   if (!payment) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), payment.org_id))) return c.json({ error: 'Not found' }, 404)
   const [markup] = await db
     .select()
     .from(payment_markups)

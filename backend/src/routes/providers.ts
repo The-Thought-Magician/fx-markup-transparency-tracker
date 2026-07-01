@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '../db/index.js'
 import { providers, provider_fee_schedules, payments, payment_markups } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -25,24 +25,25 @@ const feeScheduleSchema = z.object({
   effective_date: z.string().datetime().optional(),
 })
 
-// GET / — public — list providers (optionally filter by ?org_id)
-router.get('/', async (c) => {
+// GET / — auth — list providers (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(providers)
-        .where(eq(providers.org_id, orgId))
-        .orderBy(desc(providers.created_at))
-    : await db.select().from(providers).orderBy(desc(providers.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(providers)
+    .where(eq(providers.org_id, orgId))
+    .orderBy(desc(providers.created_at))
   return c.json(rows)
 })
 
-// GET /:id — public — provider + its current fee schedule
-router.get('/:id', async (c) => {
+// GET /:id — auth — provider + its current fee schedule
+router.get('/:id', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [provider] = await db.select().from(providers).where(eq(providers.id, id))
   if (!provider) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), provider.org_id))) return c.json({ error: 'Not found' }, 404)
   const [current_fee_schedule] = await db
     .select()
     .from(provider_fee_schedules)
@@ -103,9 +104,12 @@ router.delete('/:id', authMiddleware, async (c) => {
   return c.json({ success: true })
 })
 
-// GET /:id/fee-schedules — public — fee schedule history (newest first)
-router.get('/:id/fee-schedules', async (c) => {
+// GET /:id/fee-schedules — auth — fee schedule history (newest first)
+router.get('/:id/fee-schedules', authMiddleware, async (c) => {
   const id = c.req.param('id')
+  const [provider] = await db.select().from(providers).where(eq(providers.id, id))
+  if (!provider) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), provider.org_id))) return c.json({ error: 'Not found' }, 404)
   const rows = await db
     .select()
     .from(provider_fee_schedules)
@@ -149,12 +153,13 @@ router.post(
   },
 )
 
-// GET /:id/stats — public — aggregate markup/leakage across this provider's
+// GET /:id/stats — auth — aggregate markup/leakage across this provider's
 // payments, joined to their markup decompositions.
-router.get('/:id/stats', async (c) => {
+router.get('/:id/stats', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [provider] = await db.select().from(providers).where(eq(providers.id, id))
   if (!provider) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), provider.org_id))) return c.json({ error: 'Not found' }, 404)
 
   const rows = await db
     .select({

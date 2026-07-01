@@ -417,9 +417,8 @@ export default function AlertsPage() {
               >
                 <option value="all">All severities</option>
                 <option value="critical">Critical</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
+                <option value="warning">Warning</option>
+                <option value="info">Info</option>
               </select>
             </div>
           </div>

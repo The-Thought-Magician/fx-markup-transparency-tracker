@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { eq, and, desc } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { rate_sources } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -21,16 +21,16 @@ const updateSchema = z.object({
   confidence: z.number().min(0).max(1).optional(),
 })
 
-// GET / — public — list sources (?org_id)
-router.get('/', async (c) => {
+// GET / — auth — list sources (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(rate_sources)
-        .where(eq(rate_sources.org_id, orgId))
-        .orderBy(desc(rate_sources.created_at))
-    : await db.select().from(rate_sources).orderBy(desc(rate_sources.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(rate_sources)
+    .where(eq(rate_sources.org_id, orgId))
+    .orderBy(desc(rate_sources.created_at))
   return c.json(rows)
 })
 

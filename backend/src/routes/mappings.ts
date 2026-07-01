@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { eq, and } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { provider_mappings, providers } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -15,16 +15,15 @@ const mappingSchema = z.object({
   field_map: z.record(z.string(), z.string()).default({}),
 })
 
-// Public: list provider mappings (?org_id&provider_id)
-router.get('/', async (c) => {
+// Auth: list provider mappings (?org_id required, &provider_id)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const providerId = c.req.query('provider_id')
-  const conds = []
-  if (orgId) conds.push(eq(provider_mappings.org_id, orgId))
+  const conds = [eq(provider_mappings.org_id, orgId)]
   if (providerId) conds.push(eq(provider_mappings.provider_id, providerId))
-  const rows = conds.length
-    ? await db.select().from(provider_mappings).where(and(...conds))
-    : await db.select().from(provider_mappings)
+  const rows = await db.select().from(provider_mappings).where(and(...conds))
   return c.json(rows)
 })
 

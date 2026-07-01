@@ -3,6 +3,7 @@ import { db } from '../db/index.js'
 import { subscriptions, plans } from '../db/schema.js'
 import { eq } from 'drizzle-orm'
 import Stripe from 'stripe'
+import { authMiddleware, getUserId } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -26,8 +27,11 @@ async function getUserSubscription(userId: string) {
   return created
 }
 
-router.get('/plan', async (c) => {
-  const userId = c.req.header('x-user-id') ?? 'anonymous'
+// Auth: current user's subscription plan. User-scoped, not org-scoped.
+// Always returns a sensible default (free plan) even if Stripe env vars are
+// missing — billing must never crash when Stripe isn't configured.
+router.get('/plan', authMiddleware, async (c) => {
+  const userId = getUserId(c)
   const sub = await getUserSubscription(userId)
   const plan = await db.query.plans.findFirst({ where: eq(plans.id, sub.plan_id) })
   return c.json({ subscription: sub, plan, stripeEnabled: STRIPE_ENABLED })

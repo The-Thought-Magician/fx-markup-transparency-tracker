@@ -13,7 +13,7 @@ import {
   corridors,
   audit_events,
 } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 import {
   validateExpression,
   describeExpression,
@@ -207,27 +207,29 @@ async function recordAudit(
 // Reports
 // ---------------------------------------------------------------------------
 
-// Public: list saved reports (?org_id)
-router.get('/', async (c) => {
+// Auth: list saved reports (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db.select().from(reports).where(eq(reports.org_id, orgId)).orderBy(desc(reports.created_at))
-    : await db.select().from(reports).orderBy(desc(reports.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db.select().from(reports).where(eq(reports.org_id, orgId)).orderBy(desc(reports.created_at))
   return c.json(rows)
 })
 
-// Public: one report
-router.get('/:id', async (c) => {
+// Auth: one report
+router.get('/:id', authMiddleware, async (c) => {
   const [r] = await db.select().from(reports).where(eq(reports.id, c.req.param('id')))
   if (!r) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), r.org_id))) return c.json({ error: 'Not found' }, 404)
   return c.json(r)
 })
 
-// Public: schedules for a report
-router.get('/:id/schedules', async (c) => {
+// Auth: schedules for a report
+router.get('/:id/schedules', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [r] = await db.select().from(reports).where(eq(reports.id, id))
   if (!r) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), r.org_id))) return c.json({ error: 'Not found' }, 404)
   const rows = await db
     .select()
     .from(report_schedules)

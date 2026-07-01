@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { eq, and, desc } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { benchmark_rates, payments } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -36,27 +36,26 @@ function nearest<T extends { captured_at: Date | string }>(rows: T[], at: number
   return best
 }
 
-// GET / — public — list benchmark rates (?base&quote&org_id)
-router.get('/', async (c) => {
+// GET / — auth — list benchmark rates (?base&quote&org_id required)
+router.get('/', authMiddleware, async (c) => {
   const base = c.req.query('base')
   const quote = c.req.query('quote')
   const orgId = c.req.query('org_id')
-  const conds = []
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const conds = [eq(benchmark_rates.org_id, orgId)]
   if (base) conds.push(eq(benchmark_rates.base_currency, base))
   if (quote) conds.push(eq(benchmark_rates.quote_currency, quote))
-  if (orgId) conds.push(eq(benchmark_rates.org_id, orgId))
-  const rows = conds.length
-    ? await db
-        .select()
-        .from(benchmark_rates)
-        .where(and(...conds))
-        .orderBy(desc(benchmark_rates.captured_at))
-    : await db.select().from(benchmark_rates).orderBy(desc(benchmark_rates.captured_at))
+  const rows = await db
+    .select()
+    .from(benchmark_rates)
+    .where(and(...conds))
+    .orderBy(desc(benchmark_rates.captured_at))
   return c.json(rows)
 })
 
-// GET /lookup — public — nearest rate at time (?base&quote&at&org_id)
-router.get('/lookup', async (c) => {
+// GET /lookup — auth — nearest rate at time (?base&quote&at&org_id required)
+router.get('/lookup', authMiddleware, async (c) => {
   const base = c.req.query('base')
   const quote = c.req.query('quote')
   const at = c.req.query('at')
@@ -64,6 +63,8 @@ router.get('/lookup', async (c) => {
   if (!base || !quote) {
     return c.json({ error: 'base and quote are required' }, 400)
   }
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const atMs = at ? Date.parse(at) : Date.now()
   if (!Number.isFinite(atMs)) {
     return c.json({ error: 'at must be a valid ISO-8601 timestamp' }, 400)
@@ -71,8 +72,8 @@ router.get('/lookup', async (c) => {
   const conds = [
     eq(benchmark_rates.base_currency, base),
     eq(benchmark_rates.quote_currency, quote),
+    eq(benchmark_rates.org_id, orgId),
   ]
-  if (orgId) conds.push(eq(benchmark_rates.org_id, orgId))
   const rows = await db
     .select()
     .from(benchmark_rates)

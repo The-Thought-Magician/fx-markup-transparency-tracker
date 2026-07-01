@@ -41,6 +41,9 @@ import dashboardRoutes from './routes/dashboard.js'
 import seedRoutes from './routes/seed.js'
 import billingRoutes from './routes/billing.js'
 
+process.on('unhandledRejection', (reason) => console.error('unhandledRejection:', reason))
+process.on('uncaughtException', (err) => console.error('uncaughtException:', err))
+
 const app = new Hono()
 
 const allowedOrigins = [

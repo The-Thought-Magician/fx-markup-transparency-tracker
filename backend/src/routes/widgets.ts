@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '../db/index.js'
 import { dashboards_widgets } from '../db/schema.js'
 import { eq, and, asc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -16,19 +16,16 @@ const widgetSchema = z.object({
   position: z.number().int().optional().default(0),
 })
 
-// Public: list dashboard widgets (?org_id) ordered by position
-router.get('/', async (c) => {
+// Auth: list dashboard widgets (?org_id required) ordered by position
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(dashboards_widgets)
-        .where(eq(dashboards_widgets.org_id, orgId))
-        .orderBy(asc(dashboards_widgets.position), asc(dashboards_widgets.created_at))
-    : await db
-        .select()
-        .from(dashboards_widgets)
-        .orderBy(asc(dashboards_widgets.position), asc(dashboards_widgets.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(dashboards_widgets)
+    .where(eq(dashboards_widgets.org_id, orgId))
+    .orderBy(asc(dashboards_widgets.position), asc(dashboards_widgets.created_at))
   return c.json(rows)
 })
 

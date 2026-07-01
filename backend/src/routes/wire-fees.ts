@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '../db/index.js'
 import { wire_fees, payments, payment_markups, audit_events } from '../db/schema.js'
 import { eq } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -89,12 +89,14 @@ async function recordAudit(
   }
 }
 
-// Public: list wire fees (optionally filtered by ?payment_id)
-router.get('/', async (c) => {
+// Auth: list wire fees for a payment (?payment_id required)
+router.get('/', authMiddleware, async (c) => {
   const paymentId = c.req.query('payment_id')
-  const rows = paymentId
-    ? await db.select().from(wire_fees).where(eq(wire_fees.payment_id, paymentId))
-    : await db.select().from(wire_fees)
+  if (!paymentId) return c.json({ error: 'payment_id is required' }, 400)
+  const [payment] = await db.select().from(payments).where(eq(payments.id, paymentId))
+  if (!payment) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), payment.org_id))) return c.json({ error: 'Not found' }, 404)
+  const rows = await db.select().from(wire_fees).where(eq(wire_fees.payment_id, paymentId))
   return c.json(rows)
 })
 

@@ -12,7 +12,7 @@ import {
   audit_events,
 } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -150,24 +150,25 @@ async function recordAudit(
   }
 }
 
-// Public: list import batches (optionally filtered by ?org_id).
-router.get('/', async (c) => {
+// Auth: list import batches (?org_id required).
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(import_batches)
-        .where(eq(import_batches.org_id, orgId))
-        .orderBy(desc(import_batches.created_at))
-    : await db.select().from(import_batches).orderBy(desc(import_batches.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(import_batches)
+    .where(eq(import_batches.org_id, orgId))
+    .orderBy(desc(import_batches.created_at))
   return c.json(rows)
 })
 
-// Public: batch + its rows.
-router.get('/:id', async (c) => {
+// Auth: batch + its rows.
+router.get('/:id', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [batch] = await db.select().from(import_batches).where(eq(import_batches.id, id))
   if (!batch) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), batch.org_id))) return c.json({ error: 'Not found' }, 404)
   const rows = await db
     .select()
     .from(import_rows)
@@ -176,9 +177,12 @@ router.get('/:id', async (c) => {
   return c.json({ ...batch, rows })
 })
 
-// Public: rows for a batch.
-router.get('/:id/rows', async (c) => {
+// Auth: rows for a batch.
+router.get('/:id/rows', authMiddleware, async (c) => {
   const id = c.req.param('id')
+  const [batch] = await db.select().from(import_batches).where(eq(import_batches.id, id))
+  if (!batch) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), batch.org_id))) return c.json({ error: 'Not found' }, 404)
   const rows = await db
     .select()
     .from(import_rows)

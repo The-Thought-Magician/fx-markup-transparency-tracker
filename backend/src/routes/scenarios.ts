@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '../db/index.js'
 import { savings_scenarios, scenario_legs } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -81,27 +81,28 @@ const legSchema = z.object({
 // Routes
 // ---------------------------------------------------------------------------
 
-// GET / — public — savings scenarios (?org_id)
-router.get('/', async (c) => {
+// GET / — auth — savings scenarios (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(savings_scenarios)
-        .where(eq(savings_scenarios.org_id, orgId))
-        .orderBy(desc(savings_scenarios.created_at))
-    : await db.select().from(savings_scenarios).orderBy(desc(savings_scenarios.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(savings_scenarios)
+    .where(eq(savings_scenarios.org_id, orgId))
+    .orderBy(desc(savings_scenarios.created_at))
   return c.json(rows)
 })
 
-// GET /:id — public — scenario + legs
-router.get('/:id', async (c) => {
+// GET /:id — auth — scenario + legs
+router.get('/:id', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [scenario] = await db
     .select()
     .from(savings_scenarios)
     .where(eq(savings_scenarios.id, id))
   if (!scenario) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), scenario.org_id))) return c.json({ error: 'Not found' }, 404)
   const legs = await db
     .select()
     .from(scenario_legs)

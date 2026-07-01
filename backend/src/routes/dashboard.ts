@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { db } from '../db/index.js'
 import { payments, payment_markups, corridors, providers } from '../db/schema.js'
 import { eq } from 'drizzle-orm'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -30,8 +31,10 @@ function leakageOf(m: typeof payment_markups.$inferSelect): number {
 // ---------------------------------------------------------------------------
 // GET /summary — headline KPIs
 // ---------------------------------------------------------------------------
-router.get('/summary', async (c) => {
+router.get('/summary', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id') || undefined
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const rows = await loadJoined(orgId)
 
   const paymentCount = rows.length
@@ -108,8 +111,10 @@ function bucketKey(d: Date, period: string): string {
   return `${y}-${mo}`
 }
 
-router.get('/trends', async (c) => {
+router.get('/trends', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id') || undefined
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const period = (c.req.query('period') || 'month').toLowerCase()
   const rows = await loadJoined(orgId)
 
@@ -150,8 +155,10 @@ router.get('/trends', async (c) => {
 // ---------------------------------------------------------------------------
 // GET /top-offenders — top corridors/providers by leakage (?org_id)
 // ---------------------------------------------------------------------------
-router.get('/top-offenders', async (c) => {
+router.get('/top-offenders', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id') || undefined
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const rows = await loadJoined(orgId)
 
   const corridorAgg = new Map<

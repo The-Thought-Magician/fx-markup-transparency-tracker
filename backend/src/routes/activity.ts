@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { eq, and, desc } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { audit_events, organizations } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -25,23 +25,21 @@ const eventSchema = z.object({
 // Audit / activity feed
 // ---------------------------------------------------------------------------
 
-// Public: audit events feed (?org_id&entity_type)
-router.get('/', async (c) => {
+// Auth: audit events feed (?org_id required&entity_type)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const entityType = c.req.query('entity_type')
 
-  const conditions = []
-  if (orgId) conditions.push(eq(audit_events.org_id, orgId))
+  const conditions = [eq(audit_events.org_id, orgId)]
   if (entityType) conditions.push(eq(audit_events.entity_type, entityType))
 
-  const rows =
-    conditions.length > 0
-      ? await db
-          .select()
-          .from(audit_events)
-          .where(conditions.length === 1 ? conditions[0] : and(...conditions))
-          .orderBy(desc(audit_events.created_at))
-      : await db.select().from(audit_events).orderBy(desc(audit_events.created_at))
+  const rows = await db
+    .select()
+    .from(audit_events)
+    .where(and(...conditions))
+    .orderBy(desc(audit_events.created_at))
 
   return c.json(rows)
 })
@@ -72,8 +70,10 @@ router.post('/', authMiddleware, zValidator('json', eventSchema), async (c) => {
 // Polls the table and emits any events created after the last seen timestamp.
 // ---------------------------------------------------------------------------
 
-router.get('/stream', async (c) => {
+router.get('/stream', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
   const entityType = c.req.query('entity_type')
 
   return streamSSE(c, async (stream) => {
@@ -95,18 +95,14 @@ router.get('/stream', async (c) => {
     const MAX_ITERATIONS = 600 // ~10 minutes at 1s cadence
     let id = 0
     for (let i = 0; i < MAX_ITERATIONS && !aborted; i++) {
-      const conditions = []
-      if (orgId) conditions.push(eq(audit_events.org_id, orgId))
+      const conditions = [eq(audit_events.org_id, orgId)]
       if (entityType) conditions.push(eq(audit_events.entity_type, entityType))
 
-      const rows =
-        conditions.length > 0
-          ? await db
-              .select()
-              .from(audit_events)
-              .where(conditions.length === 1 ? conditions[0] : and(...conditions))
-              .orderBy(desc(audit_events.created_at))
-          : await db.select().from(audit_events).orderBy(desc(audit_events.created_at))
+      const rows = await db
+        .select()
+        .from(audit_events)
+        .where(and(...conditions))
+        .orderBy(desc(audit_events.created_at))
 
       // Filter to events strictly newer than lastSeen, oldest-first for delivery.
       const fresh = rows

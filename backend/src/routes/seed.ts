@@ -16,7 +16,7 @@ import {
   wire_fees,
   fee_reconciliations,
 } from '../db/schema.js'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -302,7 +302,7 @@ router.post('/', authMiddleware, zValidator('json', seedSchema), async (c) => {
       expected_fee_cents: expectedFee,
       observed_fee_cents: observedFee,
       variance_cents: variance,
-      status: variance > 0 ? 'flagged' : 'open',
+      status: variance > 0 ? 'disputed' : 'open',
       notes: null,
     })
   }
@@ -367,14 +367,18 @@ router.post('/reset', authMiddleware, async (c) => {
 // GET /status — whether sample data exists (?org_id) + counts
 // ---------------------------------------------------------------------------
 
-router.get('/status', async (c) => {
+router.get('/status', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  const userId = getUserId(c)
 
-  // Resolve target org: explicit ?org_id, else the header user's seed org.
-  let targetOrgId: string | null = orgId ?? null
-  if (!targetOrgId) {
-    const userId = getUserId(c)
-    if (userId) targetOrgId = await findSeedOrg(userId)
+  // Resolve target org: explicit ?org_id (must be a member), else the header
+  // user's own seed org.
+  let targetOrgId: string | null = null
+  if (orgId) {
+    if (!(await assertOrgMember(userId, orgId))) return c.json({ error: 'Forbidden' }, 403)
+    targetOrgId = orgId
+  } else {
+    targetOrgId = await findSeedOrg(userId)
   }
 
   if (!targetOrgId) {

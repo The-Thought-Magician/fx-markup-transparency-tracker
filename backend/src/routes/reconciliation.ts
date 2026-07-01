@@ -11,7 +11,7 @@ import {
   audit_events,
 } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -21,7 +21,7 @@ const runSchema = z.object({
 })
 
 const updateSchema = z.object({
-  status: z.enum(['open', 'matched', 'flagged', 'resolved']).optional(),
+  status: z.enum(['open', 'matched', 'disputed', 'resolved']).optional(),
   notes: z.string().optional(),
 })
 
@@ -60,10 +60,12 @@ async function computeForPayment(paymentId: string) {
   return { payment, expectedFeeCents, observedFeeCents, varianceCents }
 }
 
-// Public: list reconciliations, optionally filtered by ?org_id and ?status.
-router.get('/', async (c) => {
+// Auth: list reconciliations, filtered by required ?org_id and optional ?status.
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
   const status = c.req.query('status')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
 
   // fee_reconciliations is keyed by payment; org filtering requires the payment join.
   const rows = await db
@@ -76,8 +78,7 @@ router.get('/', async (c) => {
     .from(fee_reconciliations)
     .innerJoin(payments, eq(fee_reconciliations.payment_id, payments.id))
 
-  let filtered = rows
-  if (orgId) filtered = filtered.filter((r) => r.org_id === orgId)
+  let filtered = rows.filter((r) => r.org_id === orgId)
   if (status) filtered = filtered.filter((r) => r.recon.status === status)
 
   return c.json(
@@ -90,9 +91,12 @@ router.get('/', async (c) => {
   )
 })
 
-// Public: reconciliation for a single payment.
-router.get('/:paymentId', async (c) => {
+// Auth: reconciliation for a single payment.
+router.get('/:paymentId', authMiddleware, async (c) => {
   const paymentId = c.req.param('paymentId')
+  const [payment] = await db.select().from(payments).where(eq(payments.id, paymentId))
+  if (!payment) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), payment.org_id))) return c.json({ error: 'Not found' }, 404)
   const [recon] = await db
     .select()
     .from(fee_reconciliations)
@@ -126,7 +130,7 @@ router.post('/run', authMiddleware, zValidator('json', runSchema), async (c) => 
   for (const tp of targetPayments) {
     const result = await computeForPayment(tp.id)
     if (!result) continue
-    const status = result.varianceCents === 0 ? 'matched' : 'flagged'
+    const status = result.varianceCents === 0 ? 'matched' : 'disputed'
     const [existing] = await db
       .select()
       .from(fee_reconciliations)
@@ -188,9 +192,11 @@ router.put('/:id', authMiddleware, zValidator('json', updateSchema), async (c) =
   return c.json(updated)
 })
 
-// Public: aggregate variance per provider (optionally filtered by ?org_id).
-router.get('/variance/by-provider', async (c) => {
+// Auth: aggregate variance per provider (?org_id required).
+router.get('/variance/by-provider', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
 
   const rows = await db
     .select({
@@ -201,7 +207,7 @@ router.get('/variance/by-provider', async (c) => {
     .from(fee_reconciliations)
     .innerJoin(payments, eq(fee_reconciliations.payment_id, payments.id))
 
-  const scoped = orgId ? rows.filter((r) => r.org_id === orgId) : rows
+  const scoped = rows.filter((r) => r.org_id === orgId)
 
   const byProvider = new Map<
     string,

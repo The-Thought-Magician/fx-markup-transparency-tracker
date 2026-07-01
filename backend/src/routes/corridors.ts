@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '../db/index.js'
 import { corridors, payments, payment_markups } from '../db/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
-import { authMiddleware, getUserId } from '../lib/auth.js'
+import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
@@ -73,24 +73,25 @@ async function corridorStats(corridorId: string) {
   }
 }
 
-// GET / — public — list corridors (optionally filter by ?org_id)
-router.get('/', async (c) => {
+// GET / — auth — list corridors (?org_id required)
+router.get('/', authMiddleware, async (c) => {
   const orgId = c.req.query('org_id')
-  const rows = orgId
-    ? await db
-        .select()
-        .from(corridors)
-        .where(eq(corridors.org_id, orgId))
-        .orderBy(desc(corridors.created_at))
-    : await db.select().from(corridors).orderBy(desc(corridors.created_at))
+  if (!orgId) return c.json({ error: 'org_id is required' }, 400)
+  if (!(await assertOrgMember(getUserId(c), orgId))) return c.json({ error: 'Forbidden' }, 403)
+  const rows = await db
+    .select()
+    .from(corridors)
+    .where(eq(corridors.org_id, orgId))
+    .orderBy(desc(corridors.created_at))
   return c.json(rows)
 })
 
-// GET /:id — public — corridor + stats
-router.get('/:id', async (c) => {
+// GET /:id — auth — corridor + stats
+router.get('/:id', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [corridor] = await db.select().from(corridors).where(eq(corridors.id, id))
   if (!corridor) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), corridor.org_id))) return c.json({ error: 'Not found' }, 404)
   const stats = await corridorStats(id)
   return c.json({ ...corridor, stats })
 })
@@ -154,11 +155,12 @@ router.delete('/:id', authMiddleware, async (c) => {
   return c.json({ success: true })
 })
 
-// GET /:id/stats — public — volume/leakage/avg markup for a corridor
-router.get('/:id/stats', async (c) => {
+// GET /:id/stats — auth — volume/leakage/avg markup for a corridor
+router.get('/:id/stats', authMiddleware, async (c) => {
   const id = c.req.param('id')
   const [corridor] = await db.select().from(corridors).where(eq(corridors.id, id))
   if (!corridor) return c.json({ error: 'Not found' }, 404)
+  if (!(await assertOrgMember(getUserId(c), corridor.org_id))) return c.json({ error: 'Not found' }, 404)
   const stats = await corridorStats(id)
   return c.json(stats)
 })
