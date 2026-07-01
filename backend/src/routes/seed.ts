@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
-import { eq, and, inArray } from 'drizzle-orm'
+import { eq, inArray, desc } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import {
   organizations,
@@ -20,7 +20,7 @@ import { authMiddleware, getUserId, assertOrgMember } from '../lib/auth.js'
 
 const router = new Hono()
 
-const SEED_ORG_NAME = 'Sample Treasury Org'
+const DEFAULT_ORG_NAME = 'My Organization'
 
 // ---------------------------------------------------------------------------
 // Canonical markup math (mirrors docs/build-plan.md "Markup math")
@@ -114,15 +114,56 @@ function daysAgoDate(days: number): Date {
 }
 
 // ---------------------------------------------------------------------------
-// Resolve (or create) the user's seed org. Returns org id.
+// Resolve the org to seed into: an explicit org_id the caller is a member of,
+// else the user's own default org (auto-provisioned if they have none yet —
+// mirrors organizations.ts's GET /current behavior so seeding always lands in
+// the same org the dashboard is actively viewing).
 // ---------------------------------------------------------------------------
 
-async function findSeedOrg(userId: string): Promise<string | null> {
-  const [existing] = await db
+async function resolveTargetOrg(userId: string, requestedOrgId?: string): Promise<string> {
+  if (requestedOrgId) {
+    if (await assertOrgMember(userId, requestedOrgId)) return requestedOrgId
+  }
+  const memberships = await db.select().from(org_members).where(eq(org_members.user_id, userId))
+  const ids = new Set(memberships.map((m) => m.org_id))
+  const owned = await db
     .select()
     .from(organizations)
-    .where(and(eq(organizations.owner_id, userId), eq(organizations.name, SEED_ORG_NAME)))
-  return existing ? existing.id : null
+    .where(eq(organizations.owner_id, userId))
+    .orderBy(desc(organizations.created_at))
+  for (const o of owned) ids.add(o.id)
+  if (ids.size > 0) {
+    const all = await db.select().from(organizations).orderBy(desc(organizations.created_at))
+    const mine = all.filter((o) => ids.has(o.id))
+    if (mine.length > 0) return mine[0].id
+  }
+  const [org] = await db
+    .insert(organizations)
+    .values({ name: DEFAULT_ORG_NAME, base_currency: 'USD', owner_id: userId })
+    .returning()
+  await db.insert(org_members).values({ org_id: org.id, user_id: userId, role: 'owner' }).onConflictDoNothing()
+  return org.id
+}
+
+// Read-only variant: resolves the user's existing default org without
+// provisioning one. Returns null if the user has no org yet.
+async function findDefaultOrg(userId: string, requestedOrgId?: string): Promise<string | null> {
+  if (requestedOrgId) {
+    if (await assertOrgMember(userId, requestedOrgId)) return requestedOrgId
+    return null
+  }
+  const memberships = await db.select().from(org_members).where(eq(org_members.user_id, userId))
+  const ids = new Set(memberships.map((m) => m.org_id))
+  const owned = await db
+    .select()
+    .from(organizations)
+    .where(eq(organizations.owner_id, userId))
+    .orderBy(desc(organizations.created_at))
+  for (const o of owned) ids.add(o.id)
+  if (ids.size === 0) return null
+  const all = await db.select().from(organizations).orderBy(desc(organizations.created_at))
+  const mine = all.filter((o) => ids.has(o.id))
+  return mine.length > 0 ? mine[0].id : null
 }
 
 // ---------------------------------------------------------------------------
@@ -130,28 +171,23 @@ async function findSeedOrg(userId: string): Promise<string | null> {
 // ---------------------------------------------------------------------------
 
 const seedSchema = z
-  .object({ base_currency: z.string().min(3).max(3).optional() })
+  .object({ base_currency: z.string().min(3).max(3).optional(), org_id: z.string().optional() })
   .optional()
   .default({})
 
 router.post('/', authMiddleware, zValidator('json', seedSchema), async (c) => {
   const userId = getUserId(c)
   const body = c.req.valid('json') ?? {}
-  const baseCurrency = body.base_currency ?? 'USD'
 
-  // Idempotency: if a seed org already exists for this user, return it.
-  const existingOrgId = await findSeedOrg(userId)
-  if (existingOrgId) {
-    return c.json({ seeded: false, already: true, org_id: existingOrgId }, 200)
+  const orgId = await resolveTargetOrg(userId, body.org_id)
+
+  // Idempotency: if this org already has seeded providers, don't duplicate.
+  const existingProviders = await db.select({ id: providers.id }).from(providers).where(eq(providers.org_id, orgId))
+  if (existingProviders.length > 0) {
+    return c.json({ seeded: false, already: true, org_id: orgId }, 200)
   }
 
-  // --- organization + membership ---
-  const [org] = await db
-    .insert(organizations)
-    .values({ name: SEED_ORG_NAME, base_currency: baseCurrency, owner_id: userId })
-    .returning()
-
-  await db.insert(org_members).values({ org_id: org.id, user_id: userId, role: 'owner' })
+  const org = { id: orgId }
 
   // --- providers + current fee schedules ---
   const providerIds: string[] = []
@@ -330,7 +366,7 @@ router.post('/', authMiddleware, zValidator('json', seedSchema), async (c) => {
 
 router.post('/reset', authMiddleware, async (c) => {
   const userId = getUserId(c)
-  const orgId = await findSeedOrg(userId)
+  const orgId = await findDefaultOrg(userId)
   if (!orgId) {
     return c.json({ cleared: false, reason: 'No sample data found' }, 200)
   }
@@ -357,8 +393,6 @@ router.post('/reset', authMiddleware, async (c) => {
   await db.delete(rate_sources).where(eq(rate_sources.org_id, orgId))
   await db.delete(corridors).where(eq(corridors.org_id, orgId))
   await db.delete(providers).where(eq(providers.org_id, orgId))
-  await db.delete(org_members).where(eq(org_members.org_id, orgId))
-  await db.delete(organizations).where(eq(organizations.id, orgId))
 
   return c.json({ cleared: true, org_id: orgId })
 })
@@ -378,7 +412,7 @@ router.get('/status', authMiddleware, async (c) => {
     if (!(await assertOrgMember(userId, orgId))) return c.json({ error: 'Forbidden' }, 403)
     targetOrgId = orgId
   } else {
-    targetOrgId = await findSeedOrg(userId)
+    targetOrgId = await findDefaultOrg(userId)
   }
 
   if (!targetOrgId) {
