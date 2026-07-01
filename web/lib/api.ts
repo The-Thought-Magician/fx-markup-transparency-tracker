@@ -69,8 +69,8 @@ const api = {
   getCorridorStats: (id: string) => get(`corridors/${id}/stats`),
 
   // Benchmarks
-  getBenchmarks: (base?: string, quote?: string) => get(`benchmarks${qs({ base, quote })}`),
-  lookupBenchmark: (base: string, quote: string, at: string) => get(`benchmarks/lookup${qs({ base, quote, at })}`),
+  getBenchmarks: (base?: string, quote?: string, orgId?: string) => get(`benchmarks${qs({ base, quote, org_id: orgId })}`),
+  lookupBenchmark: (base: string, quote: string, at: string, orgId?: string) => get(`benchmarks/lookup${qs({ base, quote, at, org_id: orgId })}`),
   createBenchmark: (body: unknown) => post('benchmarks', body),
   deleteBenchmark: (id: string) => del(`benchmarks/${id}`),
   backfillBenchmarks: (body: unknown) => post('benchmarks/backfill', body),

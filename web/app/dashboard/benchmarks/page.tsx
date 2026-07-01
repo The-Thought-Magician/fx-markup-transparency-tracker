@@ -99,9 +99,9 @@ export default function BenchmarksPage() {
   )
 
   const loadBenchmarks = useCallback(async () => {
-    const rows = await api.getBenchmarks(filterBase || undefined, filterQuote || undefined)
+    const rows = await api.getBenchmarks(filterBase || undefined, filterQuote || undefined, orgId ?? undefined)
     setBenchmarks(Array.isArray(rows) ? rows : [])
-  }, [filterBase, filterQuote])
+  }, [filterBase, filterQuote, orgId])
 
   const loadAll = useCallback(async () => {
     setLoading(true)
@@ -195,7 +195,7 @@ export default function BenchmarksPage() {
     setLkError(null)
     setLkResult(null)
     try {
-      const res = await api.lookupBenchmark(lkBase, lkQuote, new Date(lkAt).toISOString())
+      const res = await api.lookupBenchmark(lkBase, lkQuote, new Date(lkAt).toISOString(), orgId ?? undefined)
       if (res && res.id) setLkResult(res)
       else setLkError('No benchmark found for that pair near that time')
     } catch (e) {
