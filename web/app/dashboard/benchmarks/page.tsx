@@ -311,7 +311,7 @@ export default function BenchmarksPage() {
         <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{error}</div>
       )}
       {backfillMsg && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-300">
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-300">
           {backfillMsg}
         </div>
       )}
@@ -368,8 +368,8 @@ export default function BenchmarksPage() {
               {lkBusy ? 'Looking up...' : 'Lookup'}
             </Button>
             {lkResult && (
-              <div className="flex items-center gap-3 rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-2 text-sm">
-                <span className="font-semibold text-teal-300">
+              <div className="flex items-center gap-3 rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-sm">
+                <span className="font-semibold text-orange-300">
                   {lkResult.base_currency}/{lkResult.quote_currency} = {lkResult.mid_rate}
                 </span>
                 <span className="text-slate-400">@ {fmtTime(lkResult.captured_at)}</span>
@@ -496,7 +496,7 @@ export default function BenchmarksPage() {
                     <TD>
                       <span className="font-semibold text-white">{b.base_currency}/{b.quote_currency}</span>
                     </TD>
-                    <TD className="tabular-nums text-teal-300">{b.mid_rate}</TD>
+                    <TD className="tabular-nums text-orange-300">{b.mid_rate}</TD>
                     <TD><Badge tone="slate">{sourceName(b.source_id)}</Badge></TD>
                     <TD className="text-slate-400">{fmtTime(b.captured_at)}</TD>
                     <TD className="text-right">

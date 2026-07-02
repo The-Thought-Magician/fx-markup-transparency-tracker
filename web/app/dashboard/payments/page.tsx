@@ -307,12 +307,12 @@ export default function PaymentsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reference, provider, corridor..."
-            className="min-w-[220px] flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+            className="min-w-[220px] flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
           />
           <select
             value={filterProvider}
             onChange={(e) => setFilterProvider(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
           >
             <option value="">All providers</option>
             {providers.map((p) => (
@@ -324,7 +324,7 @@ export default function PaymentsPage() {
           <select
             value={filterCorridor}
             onChange={(e) => setFilterCorridor(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
           >
             <option value="">All corridors</option>
             {corridors.map((c) => (
@@ -388,7 +388,7 @@ export default function PaymentsPage() {
                     <TD>
                       <Link
                         href={`/dashboard/payments/${p.id}`}
-                        className="font-medium text-teal-300 hover:underline"
+                        className="font-medium text-orange-300 hover:underline"
                       >
                         {p.reference || p.id.slice(0, 8)}
                       </Link>
@@ -580,7 +580,7 @@ export default function PaymentsPage() {
 }
 
 const inputCls =
-  'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none'
+  'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none'
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

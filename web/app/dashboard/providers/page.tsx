@@ -166,12 +166,12 @@ export default function ProvidersPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, SWIFT/BIC, currency…"
-            className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+            className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
           />
           <select
             value={tierFilter}
             onChange={(e) => setTierFilter(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
           >
             <option value="all">All tiers</option>
             {TIERS.map((t) => (
@@ -183,7 +183,7 @@ export default function ProvidersPage() {
           <select
             value={activeFilter}
             onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
@@ -231,7 +231,7 @@ export default function ProvidersPage() {
                 {filtered.map((p) => (
                   <TR key={p.id}>
                     <TD>
-                      <Link href={`/dashboard/providers/${p.id}`} className="font-medium text-teal-300 hover:text-teal-200">
+                      <Link href={`/dashboard/providers/${p.id}`} className="font-medium text-orange-300 hover:text-orange-200">
                         {p.name}
                       </Link>
                     </TD>
@@ -287,7 +287,7 @@ export default function ProvidersPage() {
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. Acme Bank"
               required
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -296,7 +296,7 @@ export default function ProvidersPage() {
               <select
                 value={form.tier}
                 onChange={(e) => setForm({ ...form, tier: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {TIERS.map((t) => (
                   <option key={t} value={t}>
@@ -312,7 +312,7 @@ export default function ProvidersPage() {
                 onChange={(e) => setForm({ ...form, home_currency: e.target.value })}
                 placeholder="USD"
                 maxLength={3}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-orange-500 focus:outline-none"
               />
             </div>
           </div>
@@ -322,7 +322,7 @@ export default function ProvidersPage() {
               value={form.swift_bic}
               onChange={(e) => setForm({ ...form, swift_bic: e.target.value })}
               placeholder="ACMEUS33"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <label className="flex items-center gap-2 text-sm text-slate-300">
@@ -330,7 +330,7 @@ export default function ProvidersPage() {
               type="checkbox"
               checked={form.is_active}
               onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
-              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-teal-500 focus:ring-teal-500"
+              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-orange-500 focus:ring-orange-500"
             />
             Active
           </label>

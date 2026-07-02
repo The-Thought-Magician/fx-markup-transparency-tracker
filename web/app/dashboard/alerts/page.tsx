@@ -304,7 +304,7 @@ export default function AlertsPage() {
       </div>
 
       {notice && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-200">
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200">
           {notice}
         </div>
       )}
@@ -357,7 +357,7 @@ export default function AlertsPage() {
                   <TR key={r.id}>
                     <TD className="font-medium text-white">{r.name}</TD>
                     <TD className="text-slate-300">
-                      <span className="text-teal-300">{metricLabel(r.metric)}</span>{' '}
+                      <span className="text-orange-300">{metricLabel(r.metric)}</span>{' '}
                       {comparatorLabel(r.comparator)}{' '}
                       <span className="font-medium tabular-nums text-white">{r.threshold}</span>
                     </TD>
@@ -398,12 +398,12 @@ export default function AlertsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search messages…"
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
               />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 <option value="all">All statuses</option>
                 <option value="open">Open</option>
@@ -413,7 +413,7 @@ export default function AlertsPage() {
               <select
                 value={severityFilter}
                 onChange={(e) => setSeverityFilter(e.target.value)}
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 <option value="all">All severities</option>
                 <option value="critical">Critical</option>
@@ -521,7 +521,7 @@ export default function AlertsPage() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. High markup on USD/EUR"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -532,7 +532,7 @@ export default function AlertsPage() {
               <select
                 value={form.metric}
                 onChange={(e) => setForm({ ...form, metric: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {METRICS.map((m) => (
                   <option key={m.value} value={m.value}>
@@ -548,7 +548,7 @@ export default function AlertsPage() {
               <select
                 value={form.comparator}
                 onChange={(e) => setForm({ ...form, comparator: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {COMPARATORS.map((c) => (
                   <option key={c.value} value={c.value}>
@@ -566,7 +566,7 @@ export default function AlertsPage() {
                 value={form.threshold}
                 onChange={(e) => setForm({ ...form, threshold: e.target.value })}
                 placeholder="0"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
               />
             </div>
           </div>
@@ -575,7 +575,7 @@ export default function AlertsPage() {
               type="checkbox"
               checked={form.is_enabled}
               onChange={(e) => setForm({ ...form, is_enabled: e.target.checked })}
-              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-teal-500 focus:ring-teal-500"
+              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-orange-500 focus:ring-orange-500"
             />
             Enabled
           </label>

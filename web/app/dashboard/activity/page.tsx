@@ -253,7 +253,7 @@ export default function ActivityPage() {
       </div>
 
       {notice && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-200">
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200">
           {notice}
         </div>
       )}
@@ -288,7 +288,7 @@ export default function ActivityPage() {
                   </div>
                   <div className="h-3 flex-1 overflow-hidden rounded-full bg-slate-800">
                     <div
-                      className="h-full rounded-full bg-teal-500"
+                      className="h-full rounded-full bg-orange-500"
                       style={{ width: `${Math.max(4, (count / actionBreakdown.max) * 100)}%` }}
                     />
                   </div>
@@ -313,12 +313,12 @@ export default function ActivityPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search events…"
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
               />
               <select
                 value={entityFilter}
                 onChange={(e) => setEntityFilter(e.target.value)}
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 <option value="all">All entities</option>
                 {ENTITY_TYPES.map((t) => (
@@ -330,7 +330,7 @@ export default function ActivityPage() {
               <select
                 value={actionFilter}
                 onChange={(e) => setActionFilter(e.target.value)}
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 <option value="all">All actions</option>
                 {ACTIONS.map((a) => (
@@ -436,7 +436,7 @@ export default function ActivityPage() {
               <select
                 value={form.entity_type}
                 onChange={(e) => setForm({ ...form, entity_type: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {ENTITY_TYPES.map((t) => (
                   <option key={t} value={t}>
@@ -452,7 +452,7 @@ export default function ActivityPage() {
               <select
                 value={form.action}
                 onChange={(e) => setForm({ ...form, action: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {ACTIONS.map((a) => (
                   <option key={a} value={a}>
@@ -470,7 +470,7 @@ export default function ActivityPage() {
               value={form.entity_id}
               onChange={(e) => setForm({ ...form, entity_id: e.target.value })}
               placeholder="e.g. payment id"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div>
@@ -482,7 +482,7 @@ export default function ActivityPage() {
               onChange={(e) => setForm({ ...form, detail: e.target.value })}
               rows={4}
               placeholder='{"reason": "manual adjustment"}'
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </div>
         </div>

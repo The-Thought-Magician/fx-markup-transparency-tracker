@@ -96,7 +96,7 @@ function markupTone(bps?: number): 'green' | 'amber' | 'rose' | 'slate' {
 // horizontal bar relative to the max markup in the set
 function MarkupBar({ value, max }: { value?: number; max: number }) {
   const pct = value && max > 0 ? Math.min(100, (value / max) * 100) : 0
-  const color = value !== undefined && value > 75 ? 'bg-rose-500' : value !== undefined && value > 25 ? 'bg-amber-500' : 'bg-teal-500'
+  const color = value !== undefined && value > 75 ? 'bg-rose-500' : value !== undefined && value > 25 ? 'bg-amber-500' : 'bg-orange-500'
   return (
     <div className="h-2 w-full max-w-[180px] overflow-hidden rounded-full bg-slate-800">
       <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
@@ -239,7 +239,7 @@ export default function LeaderboardPage() {
         <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{error}</div>
       )}
       {snapshotMsg && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-300">{snapshotMsg}</div>
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-300">{snapshotMsg}</div>
       )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -254,7 +254,7 @@ export default function LeaderboardPage() {
         <button
           onClick={() => setTab('corridors')}
           className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-            tab === 'corridors' ? 'bg-teal-500/15 text-teal-300' : 'text-slate-400 hover:text-white'
+            tab === 'corridors' ? 'bg-orange-500/15 text-orange-300' : 'text-slate-400 hover:text-white'
           }`}
         >
           Corridors
@@ -262,7 +262,7 @@ export default function LeaderboardPage() {
         <button
           onClick={() => setTab('providers')}
           className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-            tab === 'providers' ? 'bg-teal-500/15 text-teal-300' : 'text-slate-400 hover:text-white'
+            tab === 'providers' ? 'bg-orange-500/15 text-orange-300' : 'text-slate-400 hover:text-white'
           }`}
         >
           Providers

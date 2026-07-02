@@ -278,14 +278,14 @@ export default function TargetsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search corridor…"
-              className="w-44 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-44 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
             <label className="flex items-center gap-2 text-sm text-slate-400">
               <input
                 type="checkbox"
                 checked={onlyOver}
                 onChange={(e) => setOnlyOver(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-700 bg-slate-950 accent-teal-500"
+                className="h-4 w-4 rounded border-slate-700 bg-slate-950 accent-orange-500"
               />
               Over target only
             </label>
@@ -352,7 +352,7 @@ export default function TargetsPage() {
                           </div>
                         )}
                       </TD>
-                      <TD className="text-right font-medium tabular-nums text-teal-300">
+                      <TD className="text-right font-medium tabular-nums text-orange-300">
                         {fmtBps(r.target.target_markup_bps)}
                       </TD>
                       <TD className="text-right tabular-nums">{fmtBps(r.actual)}</TD>
@@ -508,7 +508,7 @@ export default function TargetsPage() {
               value={corridorId}
               onChange={(e) => setCorridorId(e.target.value)}
               disabled={!!editing}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none disabled:opacity-60"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none disabled:opacity-60"
             >
               {editing ? (
                 <option value={editing.corridor_id}>
@@ -541,7 +541,7 @@ export default function TargetsPage() {
               value={bps}
               onChange={(e) => setBps(e.target.value)}
               placeholder="e.g. 25"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
             <p className="mt-1 text-xs text-slate-600">
               Payments whose effective markup exceeds this ceiling are flagged as over target.

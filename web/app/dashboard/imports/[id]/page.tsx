@@ -276,7 +276,7 @@ export default function ImportDetailPage() {
   if (error || !batch) {
     return (
       <div className="space-y-4">
-        <Link href="/dashboard/imports" className="text-sm text-teal-400 hover:text-teal-300">
+        <Link href="/dashboard/imports" className="text-sm text-orange-400 hover:text-orange-300">
           ← Back to imports
         </Link>
         <EmptyState
@@ -297,7 +297,7 @@ export default function ImportDetailPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/dashboard/imports" className="text-sm text-teal-400 hover:text-teal-300">
+        <Link href="/dashboard/imports" className="text-sm text-orange-400 hover:text-orange-300">
           ← Back to imports
         </Link>
         <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -318,7 +318,7 @@ export default function ImportDetailPage() {
       </div>
 
       {actionMsg && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-200">
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200">
           {actionMsg}
         </div>
       )}
@@ -376,7 +376,7 @@ export default function ImportDetailPage() {
                           >
                             <span className="text-slate-500">{source}</span>
                             <span className="text-slate-600">→</span>
-                            <span className="text-teal-300">{target}</span>
+                            <span className="text-orange-300">{target}</span>
                           </span>
                         ))}
                       </div>
@@ -427,7 +427,7 @@ export default function ImportDetailPage() {
               <button
                 onClick={() => setView('raw')}
                 className={`px-3 py-1.5 text-xs font-medium ${
-                  view === 'raw' ? 'bg-teal-500 text-slate-950' : 'bg-slate-950 text-slate-400 hover:text-white'
+                  view === 'raw' ? 'bg-orange-500 text-slate-950' : 'bg-slate-950 text-slate-400 hover:text-white'
                 }`}
               >
                 Raw
@@ -436,7 +436,7 @@ export default function ImportDetailPage() {
                 onClick={() => setView('normalized')}
                 className={`px-3 py-1.5 text-xs font-medium ${
                   view === 'normalized'
-                    ? 'bg-teal-500 text-slate-950'
+                    ? 'bg-orange-500 text-slate-950'
                     : 'bg-slate-950 text-slate-400 hover:text-white'
                 }`}
               >
@@ -446,7 +446,7 @@ export default function ImportDetailPage() {
             <select
               value={rowFilter}
               onChange={(e) => setRowFilter(e.target.value)}
-              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 focus:border-orange-500 focus:outline-none"
             >
               <option value="all">All rows</option>
               <option value="errors">Errors only</option>
@@ -544,7 +544,7 @@ export default function ImportDetailPage() {
               value={mapName}
               onChange={(e) => setMapName(e.target.value)}
               placeholder="Bank XYZ statement layout"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </label>
           <div>
@@ -554,13 +554,13 @@ export default function ImportDetailPage() {
             <div className="space-y-2">
               {TARGET_FIELDS.map((t) => (
                 <div key={t} className="flex items-center gap-3">
-                  <span className="w-40 shrink-0 font-mono text-xs text-teal-300">{t}</span>
+                  <span className="w-40 shrink-0 font-mono text-xs text-orange-300">{t}</span>
                   <span className="text-slate-600">←</span>
                   {sourceColumns.length > 0 ? (
                     <select
                       value={fieldMap[t] ?? ''}
                       onChange={(e) => setFieldMap((prev) => ({ ...prev, [t]: e.target.value }))}
-                      className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                      className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
                     >
                       <option value="">— Not mapped —</option>
                       {sourceColumns.map((c) => (
@@ -574,7 +574,7 @@ export default function ImportDetailPage() {
                       value={fieldMap[t] ?? ''}
                       onChange={(e) => setFieldMap((prev) => ({ ...prev, [t]: e.target.value }))}
                       placeholder="source column name"
-                      className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                      className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
                     />
                   )}
                 </div>

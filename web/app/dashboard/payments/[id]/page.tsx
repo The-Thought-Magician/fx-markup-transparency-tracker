@@ -85,7 +85,7 @@ interface Payment {
 }
 
 const inputCls =
-  'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none'
+  'w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none'
 
 function reconTone(s?: string): 'green' | 'rose' | 'amber' | 'slate' {
   switch ((s || '').toLowerCase()) {
@@ -259,7 +259,7 @@ export default function PaymentDetailPage() {
           <CardBody>
             <h2 className="text-base font-semibold text-rose-300">Could not load payment</h2>
             <p className="mt-1 text-sm text-slate-400">{error}</p>
-            <Link href="/dashboard/payments" className="mt-3 inline-block text-sm text-teal-400 hover:underline">
+            <Link href="/dashboard/payments" className="mt-3 inline-block text-sm text-orange-400 hover:underline">
               ← Back to payments
             </Link>
           </CardBody>
@@ -287,7 +287,7 @@ export default function PaymentDetailPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <Link href="/dashboard/payments" className="text-xs text-teal-400 hover:underline">
+          <Link href="/dashboard/payments" className="text-xs text-orange-400 hover:underline">
             ← Payments
           </Link>
           <h1 className="mt-1 text-xl font-bold text-white">{payment.reference || `Payment ${id.slice(0, 8)}`}</h1>

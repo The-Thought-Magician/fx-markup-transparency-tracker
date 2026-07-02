@@ -242,7 +242,7 @@ export default function ReportsPage() {
       </div>
 
       {notice && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-200">
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200">
           {notice}
         </div>
       )}
@@ -355,7 +355,7 @@ export default function ReportsPage() {
               value={createForm.name}
               onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
               placeholder="e.g. Q2 FX leakage summary"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div>
@@ -365,7 +365,7 @@ export default function ReportsPage() {
             <select
               value={createForm.kind}
               onChange={(e) => setCreateForm({ ...createForm, kind: e.target.value })}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             >
               {REPORT_KINDS.map((k) => (
                 <option key={k.value} value={k.value}>
@@ -436,7 +436,7 @@ export default function ReportsPage() {
                 <select
                   value={scheduleForm.cadence}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, cadence: e.target.value })}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
                 >
                   {CADENCES.map((c) => (
                     <option key={c.value} value={c.value}>
@@ -454,7 +454,7 @@ export default function ReportsPage() {
                   value={scheduleForm.recipient_email}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, recipient_email: e.target.value })}
                   placeholder="treasury@company.com"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -464,7 +464,7 @@ export default function ReportsPage() {
                   type="checkbox"
                   checked={scheduleForm.is_enabled}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, is_enabled: e.target.checked })}
-                  className="h-4 w-4 rounded border-slate-700 bg-slate-900 text-teal-500 focus:ring-teal-500"
+                  className="h-4 w-4 rounded border-slate-700 bg-slate-900 text-orange-500 focus:ring-orange-500"
                 />
                 Enabled
               </label>

@@ -235,7 +235,7 @@ export default function ReconciliationPage() {
         <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{error}</div>
       )}
       {runMsg && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-300">{runMsg}</div>
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-300">{runMsg}</div>
       )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

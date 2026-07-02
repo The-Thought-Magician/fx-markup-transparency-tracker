@@ -191,7 +191,7 @@ export default function ScenariosPage() {
               placeholder="Search scenarios…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-56 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-56 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </div>
         </CardHeader>
@@ -219,13 +219,13 @@ export default function ScenariosPage() {
                 return (
                   <div
                     key={s.id}
-                    className="group flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:border-teal-500/40"
+                    className="group flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:border-orange-500/40"
                   >
                     <div className="space-y-2">
                       <div className="flex items-start justify-between gap-2">
                         <Link
                           href={`/dashboard/scenarios/${s.id}`}
-                          className="text-base font-semibold text-white hover:text-teal-300"
+                          className="text-base font-semibold text-white hover:text-orange-300"
                         >
                           {s.name}
                         </Link>
@@ -247,7 +247,7 @@ export default function ScenariosPage() {
                       <div className="space-y-1 pt-1">
                         <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-300"
+                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-orange-300"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -298,7 +298,7 @@ export default function ScenariosPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Consolidate EUR corridor to Provider B"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </label>
           <label className="block space-y-1">
@@ -308,7 +308,7 @@ export default function ScenariosPage() {
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Optional notes about this scenario"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </label>
           <label className="block space-y-1">
@@ -318,7 +318,7 @@ export default function ScenariosPage() {
               value={targetBps}
               onChange={(e) => setTargetBps(e.target.value)}
               placeholder="e.g. 25"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-orange-500 focus:outline-none"
             />
           </label>
           {saveError && <p className="text-sm text-rose-400">{saveError}</p>}

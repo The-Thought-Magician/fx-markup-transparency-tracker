@@ -268,7 +268,7 @@ export default function ScenarioDetailPage() {
   if (error && !scenario) {
     return (
       <div className="space-y-4">
-        <Link href="/dashboard/scenarios" className="text-sm text-teal-400 hover:text-teal-300">
+        <Link href="/dashboard/scenarios" className="text-sm text-orange-400 hover:text-orange-300">
           ← Back to scenarios
         </Link>
         <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
@@ -284,7 +284,7 @@ export default function ScenarioDetailPage() {
   if (!scenario) {
     return (
       <div className="space-y-4">
-        <Link href="/dashboard/scenarios" className="text-sm text-teal-400 hover:text-teal-300">
+        <Link href="/dashboard/scenarios" className="text-sm text-orange-400 hover:text-orange-300">
           ← Back to scenarios
         </Link>
         <EmptyState title="Scenario not found" description="It may have been deleted." />
@@ -301,7 +301,7 @@ export default function ScenarioDetailPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Link href="/dashboard/scenarios" className="text-sm text-teal-400 hover:text-teal-300">
+        <Link href="/dashboard/scenarios" className="text-sm text-orange-400 hover:text-orange-300">
           ← Back to scenarios
         </Link>
       </div>
@@ -356,11 +356,11 @@ export default function ScenarioDetailPage() {
             <div className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-400">Modeled</span>
-                <span className="tabular-nums text-teal-300">{fmtMoney(modeled)}</span>
+                <span className="tabular-nums text-orange-300">{fmtMoney(modeled)}</span>
               </div>
               <div className="h-3 w-full overflow-hidden rounded-full bg-slate-800">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-teal-500 to-teal-300"
+                  className="h-full rounded-full bg-gradient-to-r from-orange-500 to-orange-300"
                   style={{ width: `${(modeled / maxBar) * 100}%` }}
                 />
               </div>
@@ -384,7 +384,7 @@ export default function ScenarioDetailPage() {
               <select
                 value={legForm.corridor_id}
                 onChange={(e) => setLegForm((f) => ({ ...f, corridor_id: e.target.value }))}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               >
                 <option value="">— Select corridor —</option>
                 {corridors.map((c) => (
@@ -399,7 +399,7 @@ export default function ScenarioDetailPage() {
               <select
                 value={legForm.from_provider_id}
                 onChange={(e) => setLegForm((f) => ({ ...f, from_provider_id: e.target.value }))}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               >
                 <option value="">— Select provider —</option>
                 {providers.map((p) => (
@@ -414,7 +414,7 @@ export default function ScenarioDetailPage() {
               <select
                 value={legForm.to_provider_id}
                 onChange={(e) => setLegForm((f) => ({ ...f, to_provider_id: e.target.value }))}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               >
                 <option value="">— Select provider —</option>
                 {providers.map((p) => (
@@ -431,7 +431,7 @@ export default function ScenarioDetailPage() {
                 value={legForm.notional}
                 onChange={(e) => setLegForm((f) => ({ ...f, notional: e.target.value }))}
                 placeholder="e.g. 250000"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-orange-500 focus:outline-none"
               />
             </label>
             <label className="space-y-1">
@@ -441,7 +441,7 @@ export default function ScenarioDetailPage() {
                 value={legForm.current_markup_bps}
                 onChange={(e) => setLegForm((f) => ({ ...f, current_markup_bps: e.target.value }))}
                 placeholder="e.g. 80"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-orange-500 focus:outline-none"
               />
             </label>
             <label className="space-y-1">
@@ -451,7 +451,7 @@ export default function ScenarioDetailPage() {
                 value={legForm.modeled_markup_bps}
                 onChange={(e) => setLegForm((f) => ({ ...f, modeled_markup_bps: e.target.value }))}
                 placeholder="e.g. 25"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-orange-500 focus:outline-none"
               />
             </label>
           </div>
@@ -504,7 +504,7 @@ export default function ScenarioDetailPage() {
                     </TD>
                     <TD className="text-right tabular-nums">{fmtMoney(leg.notional_cents)}</TD>
                     <TD className="text-right tabular-nums text-amber-300">{leg.current_markup_bps}</TD>
-                    <TD className="text-right tabular-nums text-teal-300">{leg.modeled_markup_bps}</TD>
+                    <TD className="text-right tabular-nums text-orange-300">{leg.modeled_markup_bps}</TD>
                     <TD className="text-right tabular-nums font-semibold text-emerald-300">
                       {fmtMoney(leg.leg_savings_cents)}
                     </TD>
@@ -548,7 +548,7 @@ export default function ScenarioDetailPage() {
             <input
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
             />
           </label>
           <label className="block space-y-1">
@@ -557,7 +557,7 @@ export default function ScenarioDetailPage() {
               value={editDesc}
               onChange={(e) => setEditDesc(e.target.value)}
               rows={3}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
             />
           </label>
           <label className="block space-y-1">
@@ -566,7 +566,7 @@ export default function ScenarioDetailPage() {
               type="number"
               value={editTarget}
               onChange={(e) => setEditTarget(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
             />
           </label>
           {metaError && <p className="text-sm text-rose-400">{metaError}</p>}
@@ -595,7 +595,7 @@ export default function ScenarioDetailPage() {
             <select
               value={editLegForm.corridor_id}
               onChange={(e) => setEditLegForm((f) => ({ ...f, corridor_id: e.target.value }))}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
             >
               <option value="">— Select corridor —</option>
               {corridors.map((c) => (
@@ -611,7 +611,7 @@ export default function ScenarioDetailPage() {
               <select
                 value={editLegForm.from_provider_id}
                 onChange={(e) => setEditLegForm((f) => ({ ...f, from_provider_id: e.target.value }))}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               >
                 <option value="">—</option>
                 {providers.map((p) => (
@@ -626,7 +626,7 @@ export default function ScenarioDetailPage() {
               <select
                 value={editLegForm.to_provider_id}
                 onChange={(e) => setEditLegForm((f) => ({ ...f, to_provider_id: e.target.value }))}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               >
                 <option value="">—</option>
                 {providers.map((p) => (
@@ -643,7 +643,7 @@ export default function ScenarioDetailPage() {
               type="number"
               value={editLegForm.notional}
               onChange={(e) => setEditLegForm((f) => ({ ...f, notional: e.target.value }))}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
             />
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -653,7 +653,7 @@ export default function ScenarioDetailPage() {
                 type="number"
                 value={editLegForm.current_markup_bps}
                 onChange={(e) => setEditLegForm((f) => ({ ...f, current_markup_bps: e.target.value }))}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               />
             </label>
             <label className="block space-y-1">
@@ -662,7 +662,7 @@ export default function ScenarioDetailPage() {
                 type="number"
                 value={editLegForm.modeled_markup_bps}
                 onChange={(e) => setEditLegForm((f) => ({ ...f, modeled_markup_bps: e.target.value }))}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               />
             </label>
           </div>

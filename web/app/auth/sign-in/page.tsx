@@ -31,7 +31,7 @@ export default function SignIn() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-teal-500/20 text-sm font-black text-teal-300">
+            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-500/20 text-sm font-black text-orange-300">
               Fx
             </span>
             <span className="text-lg font-bold tracking-tight text-white">FxMarkupTransparencyTracker</span>
@@ -48,7 +48,7 @@ export default function SignIn() {
               name="email"
               type="email"
               required
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-orange-500 focus:outline-none"
               placeholder="you@treasury.com"
             />
           </div>
@@ -58,19 +58,19 @@ export default function SignIn() {
               name="password"
               type="password"
               required
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white placeholder-slate-500 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-teal-500 py-3 font-semibold text-slate-950 transition-colors hover:bg-teal-400 disabled:opacity-50"
+            className="w-full rounded-lg bg-orange-500 py-3 font-semibold text-slate-950 transition-colors hover:bg-orange-400 disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
           <p className="text-center text-sm text-slate-400">
             No account?{' '}
-            <Link href="/auth/sign-up" className="text-teal-400 hover:text-teal-300">
+            <Link href="/auth/sign-up" className="text-orange-400 hover:text-orange-300">
               Sign up
             </Link>
           </p>

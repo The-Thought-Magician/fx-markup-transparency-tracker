@@ -202,7 +202,7 @@ export default function LedgerPage() {
                 type="month"
                 value={period}
                 onChange={(e) => setPeriod(e.target.value)}
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               />
             </label>
             <Button variant="secondary" onClick={() => void refreshSummary()}>
@@ -249,7 +249,7 @@ export default function LedgerPage() {
                       </div>
                       <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-teal-500 to-teal-300"
+                          className="h-full rounded-full bg-gradient-to-r from-orange-500 to-orange-300"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
@@ -275,7 +275,7 @@ export default function LedgerPage() {
                 type="month"
                 value={period}
                 onChange={(e) => setPeriod(e.target.value)}
-                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-teal-500 focus:outline-none"
+                className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-orange-500 focus:outline-none"
               />
             </label>
             <Button onClick={() => void handleCreate()} disabled={saving}>

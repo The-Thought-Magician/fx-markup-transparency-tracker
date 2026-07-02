@@ -258,12 +258,12 @@ export default function ImportsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search filename…"
-              className="w-48 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-48 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             >
               <option value="all">All statuses</option>
               {statuses.map((s) => (
@@ -332,7 +332,7 @@ export default function ImportsPage() {
                     <TD>
                       <Link
                         href={`/dashboard/imports/${b.id}`}
-                        className="font-medium text-teal-300 hover:text-teal-200 hover:underline"
+                        className="font-medium text-orange-300 hover:text-orange-200 hover:underline"
                       >
                         {b.filename}
                       </Link>
@@ -410,7 +410,7 @@ export default function ImportsPage() {
                 value={filename}
                 onChange={(e) => setFilename(e.target.value)}
                 placeholder="june-statement.csv"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
               />
             </label>
             <label className="block">
@@ -420,7 +420,7 @@ export default function ImportsPage() {
               <select
                 value={format}
                 onChange={(e) => setFormat(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {FORMATS.map((f) => (
                   <option key={f} value={f}>
@@ -437,7 +437,7 @@ export default function ImportsPage() {
             <select
               value={providerId}
               onChange={(e) => setProviderId(e.target.value)}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             >
               <option value="">— Unassigned —</option>
               {providers.map((p) => (
@@ -460,11 +460,11 @@ export default function ImportsPage() {
                     setFormat('csv')
                     if (!filename) setFilename('sample-statement.csv')
                   }}
-                  className="text-xs text-teal-400 hover:text-teal-300"
+                  className="text-xs text-orange-400 hover:text-orange-300"
                 >
                   Load sample
                 </button>
-                <label className="cursor-pointer text-xs text-teal-400 hover:text-teal-300">
+                <label className="cursor-pointer text-xs text-orange-400 hover:text-orange-300">
                   Choose file
                   <input
                     type="file"
@@ -483,7 +483,7 @@ export default function ImportsPage() {
               onChange={(e) => setRawText(e.target.value)}
               rows={8}
               placeholder="Paste CSV or JSON content here, or upload a file."
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
             <p className="mt-1 text-xs text-slate-600">
               Rows are parsed client-side and sent to the backend for normalization. Review and commit on

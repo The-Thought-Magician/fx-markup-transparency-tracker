@@ -210,7 +210,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
   if (error || !provider) {
     return (
       <div className="space-y-4">
-        <Link href="/dashboard/providers" className="text-sm text-teal-300 hover:text-teal-200">
+        <Link href="/dashboard/providers" className="text-sm text-orange-300 hover:text-orange-200">
           ← Back to providers
         </Link>
         <Card>
@@ -231,7 +231,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/dashboard/providers" className="text-sm text-teal-300 hover:text-teal-200">
+        <Link href="/dashboard/providers" className="text-sm text-orange-300 hover:text-orange-200">
           ← Back to providers
         </Link>
       </div>
@@ -336,7 +336,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
                       <TD>
                         <div className="flex items-center gap-2">
                           <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-800">
-                            <div className="h-full bg-teal-500" style={{ width: `${(totalStated / maxScheduleFee) * 100}%` }} />
+                            <div className="h-full bg-orange-500" style={{ width: `${(totalStated / maxScheduleFee) * 100}%` }} />
                           </div>
                           <span className="tabular-nums text-xs text-slate-400">{fmtCents(totalStated)}</span>
                         </div>
@@ -361,7 +361,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
               value={noteBody}
               onChange={(e) => setNoteBody(e.target.value)}
               placeholder="Add a note about this provider…"
-              className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+              className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
             />
             <Button type="submit" disabled={savingNote || !noteBody.trim()}>
               {savingNote ? 'Saving…' : 'Add note'}
@@ -404,7 +404,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
               value={editForm.name}
               onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
               required
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -413,7 +413,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
               <select
                 value={editForm.tier}
                 onChange={(e) => setEditForm({ ...editForm, tier: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {TIERS.map((t) => (
                   <option key={t} value={t}>
@@ -428,7 +428,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
                 value={editForm.home_currency}
                 onChange={(e) => setEditForm({ ...editForm, home_currency: e.target.value })}
                 maxLength={3}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-orange-500 focus:outline-none"
               />
             </div>
           </div>
@@ -437,7 +437,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
             <input
               value={editForm.swift_bic}
               onChange={(e) => setEditForm({ ...editForm, swift_bic: e.target.value })}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <label className="flex items-center gap-2 text-sm text-slate-300">
@@ -445,7 +445,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
               type="checkbox"
               checked={editForm.is_active}
               onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })}
-              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-teal-500 focus:ring-teal-500"
+              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-orange-500 focus:ring-orange-500"
             />
             Active
           </label>
@@ -479,7 +479,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
                 value={scheduleForm.wire_fee}
                 onChange={(e) => setScheduleForm({ ...scheduleForm, wire_fee: e.target.value })}
                 placeholder="25.00"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               />
             </div>
             <div>
@@ -491,7 +491,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
                 value={scheduleForm.stated_fx_fee_pct}
                 onChange={(e) => setScheduleForm({ ...scheduleForm, stated_fx_fee_pct: e.target.value })}
                 placeholder="0.50"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               />
             </div>
             <div>
@@ -503,7 +503,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
                 value={scheduleForm.lifting_charge}
                 onChange={(e) => setScheduleForm({ ...scheduleForm, lifting_charge: e.target.value })}
                 placeholder="0.00"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               />
             </div>
             <div>
@@ -511,7 +511,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
               <select
                 value={scheduleForm.lifting_policy}
                 onChange={(e) => setScheduleForm({ ...scheduleForm, lifting_policy: e.target.value })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
               >
                 {LIFTING_POLICIES.map((p) => (
                   <option key={p} value={p}>
@@ -527,7 +527,7 @@ export default function ProviderDetailPage({ params }: { params: Promise<{ id: s
               type="date"
               value={scheduleForm.effective_date}
               onChange={(e) => setScheduleForm({ ...scheduleForm, effective_date: e.target.value })}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             />
           </div>
         </form>

@@ -353,7 +353,7 @@ export default function SettingsPage() {
           </div>
 
           {notice && (
-            <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-200">
+            <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200">
               {notice}
             </div>
           )}
@@ -375,7 +375,7 @@ export default function SettingsPage() {
                 }}
                 className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
                   tab === t.id
-                    ? 'border-teal-400 text-teal-300'
+                    ? 'border-orange-400 text-orange-300'
                     : 'border-transparent text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -406,7 +406,7 @@ export default function SettingsPage() {
                         <input
                           value={orgForm.name}
                           onChange={(e) => setOrgForm({ ...orgForm, name: e.target.value })}
-                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
                         />
                       </div>
                       <div>
@@ -416,7 +416,7 @@ export default function SettingsPage() {
                         <select
                           value={orgForm.base_currency}
                           onChange={(e) => setOrgForm({ ...orgForm, base_currency: e.target.value })}
-                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
                         >
                           {CURRENCIES.map((c) => (
                             <option key={c} value={c}>
@@ -701,7 +701,7 @@ export default function SettingsPage() {
                   value={memberForm.user_id}
                   onChange={(e) => setMemberForm({ ...memberForm, user_id: e.target.value })}
                   placeholder="auth user id"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -711,7 +711,7 @@ export default function SettingsPage() {
                 <select
                   value={memberForm.role}
                   onChange={(e) => setMemberForm({ ...memberForm, role: e.target.value })}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
                 >
                   <option value="member">Member</option>
                   <option value="admin">Admin</option>
@@ -746,7 +746,7 @@ export default function SettingsPage() {
                   value={widgetForm.title}
                   onChange={(e) => setWidgetForm({ ...widgetForm, title: e.target.value })}
                   placeholder="e.g. Annualized leakage"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -757,7 +757,7 @@ export default function SettingsPage() {
                   <select
                     value={widgetForm.kind}
                     onChange={(e) => setWidgetForm({ ...widgetForm, kind: e.target.value })}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
                   >
                     {WIDGET_KINDS.map((k) => (
                       <option key={k.value} value={k.value}>
@@ -774,7 +774,7 @@ export default function SettingsPage() {
                     type="number"
                     value={widgetForm.position}
                     onChange={(e) => setWidgetForm({ ...widgetForm, position: e.target.value })}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
                   />
                 </div>
               </div>

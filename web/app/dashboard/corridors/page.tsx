@@ -210,12 +210,12 @@ export default function CorridorsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search pair or label (e.g. USD/EUR)…"
-            className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-teal-500 focus:outline-none"
+            className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:border-orange-500 focus:outline-none"
           />
           <select
             value={activeFilter}
             onChange={(e) => setActiveFilter(e.target.value as typeof activeFilter)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
@@ -267,7 +267,7 @@ export default function CorridorsPage() {
                   return (
                     <TR key={c.id}>
                       <TD>
-                        <span className="font-mono font-semibold text-teal-300">
+                        <span className="font-mono font-semibold text-orange-300">
                           {c.base_currency}/{c.quote_currency}
                         </span>
                       </TD>
@@ -343,7 +343,7 @@ export default function CorridorsPage() {
                 placeholder="USD"
                 maxLength={3}
                 required
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-orange-500 focus:outline-none"
               />
             </div>
             <div>
@@ -354,7 +354,7 @@ export default function CorridorsPage() {
                 placeholder="EUR"
                 maxLength={3}
                 required
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm uppercase text-slate-200 focus:border-orange-500 focus:outline-none"
               />
             </div>
           </div>
@@ -364,7 +364,7 @@ export default function CorridorsPage() {
               value={form.label}
               onChange={(e) => setForm({ ...form, label: e.target.value })}
               placeholder="EU supplier payments"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <label className="flex items-center gap-2 text-sm text-slate-300">
@@ -372,7 +372,7 @@ export default function CorridorsPage() {
               type="checkbox"
               checked={form.is_active}
               onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
-              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-teal-500 focus:ring-teal-500"
+              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-orange-500 focus:ring-orange-500"
             />
             Active
           </label>
@@ -401,7 +401,7 @@ export default function CorridorsPage() {
               value={editForm.label}
               onChange={(e) => setEditForm({ ...editForm, label: e.target.value })}
               placeholder="EU supplier payments"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-orange-500 focus:outline-none"
             />
           </div>
           <label className="flex items-center gap-2 text-sm text-slate-300">
@@ -409,7 +409,7 @@ export default function CorridorsPage() {
               type="checkbox"
               checked={editForm.is_active}
               onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })}
-              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-teal-500 focus:ring-teal-500"
+              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-orange-500 focus:ring-orange-500"
             />
             Active
           </label>

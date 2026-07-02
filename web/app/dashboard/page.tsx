@@ -303,7 +303,7 @@ export default function DashboardPage() {
             <p className="mt-1 text-sm text-slate-400">{error}</p>
             <p className="mt-3 text-sm text-slate-500">
               If you have no data yet, seed a sample workspace from{' '}
-              <Link href="/dashboard/seed" className="text-teal-400 hover:underline">
+              <Link href="/dashboard/seed" className="text-orange-400 hover:underline">
                 Sample Data
               </Link>
               .
@@ -390,7 +390,7 @@ export default function DashboardPage() {
                 onClick={() => setOffenderTab('corridor')}
                 className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                   offenderTab === 'corridor'
-                    ? 'bg-slate-800 text-teal-300'
+                    ? 'bg-slate-800 text-orange-300'
                     : 'text-slate-500 hover:text-slate-300'
                 }`}
               >
@@ -400,7 +400,7 @@ export default function DashboardPage() {
                 onClick={() => setOffenderTab('provider')}
                 className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                   offenderTab === 'provider'
-                    ? 'bg-slate-800 text-teal-300'
+                    ? 'bg-slate-800 text-orange-300'
                     : 'text-slate-500 hover:text-slate-300'
                 }`}
               >
@@ -420,7 +420,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-white">Recent alerts</h2>
-            <Link href="/dashboard/alerts" className="text-xs font-medium text-teal-400 hover:underline">
+            <Link href="/dashboard/alerts" className="text-xs font-medium text-orange-400 hover:underline">
               View all
             </Link>
           </CardHeader>
@@ -450,7 +450,7 @@ export default function DashboardPage() {
                       {a.payment_id && (
                         <Link
                           href={`/dashboard/payments/${a.payment_id}`}
-                          className="text-[11px] text-teal-400 hover:underline"
+                          className="text-[11px] text-orange-400 hover:underline"
                         >
                           payment
                         </Link>

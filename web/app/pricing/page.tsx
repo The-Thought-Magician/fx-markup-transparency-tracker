@@ -31,7 +31,7 @@ export default function Pricing() {
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <nav className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-teal-500/20 text-sm font-black text-teal-300">
+          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-500/20 text-sm font-black text-orange-300">
             Fx
           </span>
           <span className="text-base font-bold tracking-tight text-white">FxMarkupTransparencyTracker</span>
@@ -42,7 +42,7 @@ export default function Pricing() {
           </Link>
           <Link
             href="/auth/sign-up"
-            className="rounded-lg bg-teal-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-teal-400"
+            className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-orange-400"
           >
             Get Started
           </Link>
@@ -58,10 +58,10 @@ export default function Pricing() {
 
         <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
           {/* Free plan */}
-          <div className="rounded-2xl border border-teal-500/40 bg-slate-900 p-8 text-left">
+          <div className="rounded-2xl border border-orange-500/40 bg-slate-900 p-8 text-left">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Free</h2>
-              <span className="rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-0.5 text-xs font-medium text-teal-300">
+              <span className="rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-0.5 text-xs font-medium text-orange-300">
                 Current
               </span>
             </div>
@@ -73,14 +73,14 @@ export default function Pricing() {
             <ul className="mt-6 space-y-2">
               {freeFeatures.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="mt-0.5 text-teal-400">✓</span>
+                  <span className="mt-0.5 text-orange-400">✓</span>
                   <span>{f}</span>
                 </li>
               ))}
             </ul>
             <Link
               href="/auth/sign-up"
-              className="mt-8 block rounded-lg bg-teal-500 py-3 text-center font-semibold text-slate-950 transition-colors hover:bg-teal-400"
+              className="mt-8 block rounded-lg bg-orange-500 py-3 text-center font-semibold text-slate-950 transition-colors hover:bg-orange-400"
             >
               Start free
             </Link>
@@ -97,15 +97,15 @@ export default function Pricing() {
             </p>
             <ul className="mt-6 space-y-2">
               <li className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="mt-0.5 text-teal-400">✓</span>
+                <span className="mt-0.5 text-orange-400">✓</span>
                 <span>Everything in Free</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="mt-0.5 text-teal-400">✓</span>
+                <span className="mt-0.5 text-orange-400">✓</span>
                 <span>Managed billing via Stripe</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="mt-0.5 text-teal-400">✓</span>
+                <span className="mt-0.5 text-orange-400">✓</span>
                 <span>Priority support</span>
               </li>
             </ul>
@@ -121,7 +121,7 @@ export default function Pricing() {
 
         <p className="mt-12 text-sm text-slate-500">
           Already have an account?{' '}
-          <Link href="/auth/sign-in" className="text-teal-400 hover:text-teal-300">
+          <Link href="/auth/sign-in" className="text-orange-400 hover:text-orange-300">
             Sign in
           </Link>
         </p>

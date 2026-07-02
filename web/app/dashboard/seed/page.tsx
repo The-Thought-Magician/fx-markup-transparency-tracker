@@ -149,7 +149,7 @@ export default function SeedPage() {
       </div>
 
       {notice && (
-        <div className="rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-sm text-teal-200">
+        <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-4 py-3 text-sm text-orange-200">
           {notice}
         </div>
       )}
@@ -263,7 +263,7 @@ export default function SeedPage() {
                       key={key}
                       className="rounded-lg border border-slate-800 bg-slate-950 px-4 py-3"
                     >
-                      <div className="text-2xl font-bold tabular-nums text-teal-300">{value}</div>
+                      <div className="text-2xl font-bold tabular-nums text-orange-300">{value}</div>
                       <div className="mt-0.5 text-xs text-slate-400">{labelFor(key)}</div>
                     </div>
                   ))}
@@ -280,19 +280,19 @@ export default function SeedPage() {
         <CardBody>
           <ul className="grid grid-cols-1 gap-2 text-sm text-slate-400 sm:grid-cols-2">
             <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />
               Multiple FX providers across tiers, each with current fee schedules.
             </li>
             <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />
               Common currency corridors (USD/EUR, GBP/USD, USD/INR, and more).
             </li>
             <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />
               Rate sources and time-stamped benchmark mid-rates.
             </li>
             <li className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />
               Payments with applied rates, disclosed fees, and computed hidden-spread markups.
             </li>
           </ul>
